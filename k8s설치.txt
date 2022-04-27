@@ -69,4 +69,9 @@ kubeadm join 10.100.0.102:6443 --token 0s8n4d.vaq43eipiyv03ts9 \
 
 cat > token.txt
 
+(4) kubectl get nodes 명령어 확인
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
 
