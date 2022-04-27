@@ -3,7 +3,7 @@
 kubernetes.io
 swapoff -a && sed -i '/swap/s/^/#/'/etc/fstab
 
-cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf   
 br_netfilter
 EOF
 
