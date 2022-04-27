@@ -1,7 +1,7 @@
 (1) kubenetes 설치
 
 kubernetes.io
-swapoff -a && sed -i '/swap/s/^/#/'/etc/fstab
+swapoff -a && sed -i '/ swap / s/^/#/' /etc/fstab
 
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 br_netfilter
