@@ -1,0 +1,75 @@
+(1) kubenetes 설치
+
+kubernetes.io
+swapoff -a && sed -i '/swap/s/^/#/'/etc/fstab
+
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+br_netfilter
+EOF
+
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sudo sysctl --system
+
+systemctl stop firewalld 
+systemctl disable firewalld
+
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl
+sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+
+systemctl start kubelet && systemctl enable kubelet
+
+마스터노드에서 실행
+kubeadm reset
+kubeadm init
+
+(2) kubeadm init시에 Get http://localhost:10248/healthz: dial tcp 127.0.0.1:10248: connect: connection refused 에러
+
+sudo mkdir /etc/docker
+cat <<EOF | sudo tee /etc/docker/daemon.json
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
+EOF
+
+
+sudo systemctl enable docker
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+
+# kubelet가 실행인지 확인
+> sudo systemctl status kubelet
+
+# 실행중이 아닐 경우
+> sudo systemctl start kubelet
+
+위에 커맨드까지 끝나고 나서 
+
+kubeadm restart 
+
+kubeadm init 을 다시 실행하면 정상적으로 처리 된다.
+
+(3) join admin 저장
+
+kubeadm join 10.100.0.102:6443 --token 0s8n4d.vaq43eipiyv03ts9 \
+	--discovery-token-ca-cert-hash sha256:cd2e880e73c6b882818a0ea6f1af879b559a1bdc852f1c2f73bceea6c05870fd 
+
+cat > token.txt
+
+(4) kubectl get nodes 명령어 확인
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
