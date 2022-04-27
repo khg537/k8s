@@ -62,4 +62,11 @@ kubeadm restart
 
 kubeadm init 을 다시 실행하면 정상적으로 처리 된다.
 
+(3) join admin 저장
+
+kubeadm join 10.100.0.102:6443 --token 0s8n4d.vaq43eipiyv03ts9 \
+	--discovery-token-ca-cert-hash sha256:cd2e880e73c6b882818a0ea6f1af879b559a1bdc852f1c2f73bceea6c05870fd 
+
+cat > token.txt
+
 
