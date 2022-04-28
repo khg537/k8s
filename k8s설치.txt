@@ -25,6 +25,22 @@ sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
+*******************
+설치 안될때
+********************
+Add key for new repository:
+
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+Add repository:
+
+sudo vim /etc/apt/sources.list.d/kubernetes.list
+deb http://apt.kubernetes.io/ kubernetes-xenial main
+Install Kubernetes:
+
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl kubernetes-cni
+*********************************************************************
+
 systemctl start kubelet && systemctl enable kubelet
 
 마스터노드에서 실행
