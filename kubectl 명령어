@@ -1,0 +1,14 @@
+1. 동작중인 파드 정보보기
+kubectl get pods
+kubectl get pods -o wide
+kubectl describe pod webserver
+
+2. 동작 중인 파드 수정
+kubectl edit pod webserver
+
+3. 동작 중인 파드 삭제
+kubectl delete pod webserver
+kubectl delete pod --all
+
+4. 동작중인 전체 파드 확인
+kubectl get pods --all-namespaces
