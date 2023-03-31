@@ -1,0 +1,30 @@
+* single container 의 경우 Pod 명만 필요하지만, Multi container 인 경우에는 Pod 명 -c 컨테이너
+kubectl create -f pod-multi.yaml
+kubectl get pods
+kubectl get pods -o wide
+
+root@master1:/home/k8s/work/k8s_study# kubectl get pods -o wide
+NAME        READY   STATUS    RESTARTS   AGE   IP          NODE                  NOMINATED NODE   READINESS GATES
+multipod    2/2     Running   0          18m   10.32.0.7   master1.example.com   <none>           <none>
+nginx-pod   1/1     Running   0          37m   10.32.0.6   master1.example.com   <none>           <none>
+webserver   1/1     Running   0          39m   10.32.0.5   master1.example.com   <none>           <none>
+
+1. multipod
+kubectl exec 파드명 -c 컨테이너명 -it -- /bin/bash
+(ex)
+1. nginx container 들어가기
+kubectl exec multipod -c nginx-container -it -- /bin/bash
+cd /usr/share/nginx/html
+echo "TEST web" > index.html
+exit
+curl 10.32.0.7
+
+2. centos container 들어가기
+kubectl exec multipod -centos-container -it -- /bin/bash
+
+3. 로그 보기
+root@master1:/home/k8s/work/k8s_study# kubectl logs multipod -c nginx-container
+10.32.0.1 - - [31/Mar/2023:00:53:41 +0000] "GET / HTTP/1.1" 200 612 "-" "curl/7.72.0-DEV" "-"
+10.32.0.1 - - [31/Mar/2023:01:03:38 +0000] "GET / HTTP/1.1" 200 9 "-" "curl/7.72.0-DEV" "-"
+127.0.0.1 - - [31/Mar/2023:01:06:39 +0000] "GET / HTTP/1.1" 200 9 "-" "curl/7.29.0" "-"
+
