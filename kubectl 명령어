@@ -12,3 +12,15 @@ kubectl delete pod --all
 
 4. 동작중인 전체 파드 확인
 kubectl get pods --all-namespaces
+
+5. 파드 실행
+kubectl run webserver --image=nginx:1.14
+
+ex) Pod 생성 후 오류 수정해보기
+1.kubectl run redis --image=redis123 --dry-run -o yaml > redis.yaml
+2. yaml 편집
+3. kubectl create -f redis.yaml
+4. 오류 확인
+5. kubectl describe pod redis
+6. kubectl edit pod redis
+7. 수정 후 wq!
